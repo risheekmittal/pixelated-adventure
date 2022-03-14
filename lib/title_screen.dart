@@ -21,6 +21,9 @@ class _LevelSelectionState extends State<LevelSelection> {
   CarouselController carouselController = CarouselController();
   ValueNotifier value = ValueNotifier(1);
   int i = -1;
+  bool? boolValue1;
+  bool? boolValue2;
+  bool? boolValue3;
   CheckWin checkWin = CheckWin(
       checkLevel1: true,
       checkLevel2: false,
@@ -44,6 +47,37 @@ class _LevelSelectionState extends State<LevelSelection> {
     startBgmMusic();
     checkLevelClear();
     super.initState();
+    getBoolValuesSF();
+    if (boolValue1 != null) {
+      checkWin.checkLevel2 = boolValue1!;
+    }
+    if (boolValue2 != null) {
+      checkWin.checkLevel3 = boolValue2!;
+    }
+    if (boolValue3 != null) {
+      checkWin.checkLevel4 = boolValue3!;
+    }
+  }
+
+  getBoolValuesSF() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return bool
+    boolValue1 = prefs.getBool('boolValue1');
+    boolValue2 = prefs.getBool('boolValue2');
+    boolValue3 = prefs.getBool('boolValue3');
+  }
+
+  addBoolToSF() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (checkWin.checkLevel2 == true) {
+      prefs.setBool('boolValue1', true);
+    }
+    if (checkWin.checkLevel3 == true) {
+      prefs.setBool('boolValue2', true);
+    }
+    if (checkWin.checkLevel4 == true) {
+      prefs.setBool('boolValue3', true);
+    }
   }
 
   void checkLevelClear() async {
@@ -75,6 +109,7 @@ class _LevelSelectionState extends State<LevelSelection> {
                 height: MediaQuery.of(context).size.height / 1.2,
                 child: GestureDetector(
                   onTap: () {
+                    addBoolToSF();
                     if (value.value == 1 && checkWin.checkLevel1) {
                       Navigator.push(
                           context,
